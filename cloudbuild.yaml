@@ -35,7 +35,8 @@ steps:
         unzip sonar-scanner-cli-5.0.0.2966-linux.zip
         mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
         export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        export PATH=$sonar:$PATH
+        path=$PATH
+        export PATH=$sonar:$path
         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pruthvi-gcp-devops \
@@ -54,7 +55,8 @@ steps:
         unzip sonar-scanner-cli-5.0.0.2966-linux.zip
         mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
         export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        export PATH=$sonar:$PATH
+        path=$PATH
+        export PATH=$sonar:$path
         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pruthvi-gcp-devops \
