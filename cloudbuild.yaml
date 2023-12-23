@@ -9,8 +9,7 @@
 steps:
   #Execute Sonal cloud sourceProvenance:
   - name: maven:3-jdk-11
-    entrypoint: mvn src/ledger/balancereader
-    args: ['verify', 'sonar:sonar',
+    args: ['cd src/ledger/balancereader', 'mvn', 'verify', 'sonar:sonar',
      '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
      '-Dsonar.porjectkey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
 substitutions:
