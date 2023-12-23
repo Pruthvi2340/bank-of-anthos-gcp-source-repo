@@ -30,7 +30,7 @@ steps:
     args:
       - '-c'
       - |
-        pip install -r src/accounts/contacts/requirements.txt
+        pip install -r requirements.txt
         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pruthvi-gcp-devops \
@@ -44,7 +44,7 @@ steps:
     args:
       - '-c'
       - |
-        pip install -r src/accounts/userservice/requirements.txt
+        pip install -r requirements.txt
         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pruthvi-gcp-devops \
