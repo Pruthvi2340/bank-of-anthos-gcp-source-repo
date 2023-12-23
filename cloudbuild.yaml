@@ -24,7 +24,7 @@ steps:
      '-Dsonar.porjectkey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/ledger/ledgerwriter
   # Execute Sonal cloud source on accounts contacts service
-  - name: 'gcr.io/cloud-builders/python'
+  - name: 'gcr.io/cloud-builders/python3.10'
     id: contacts-code-scanning
     entrypoint: 'bash'
     args:
@@ -38,7 +38,7 @@ steps:
           -Dsonar.login=${_SONAR_TOKEN}
     dir: src/accounts/contacts
   #Execute Sonal cloud source on accounts userservice service
-  - name: 'gcr.io/cloud-builders/python'
+  - name: 'gcr.io/cloud-builders/python3.10'
     id: userservice-code-scanning
     entrypoint: 'bash'
     args:
