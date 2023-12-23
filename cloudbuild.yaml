@@ -7,7 +7,7 @@
 # 4. sonar.login=04d9bd592f25db1d991090c621540fbed3541f6f
 
 steps:
-  #Execute Sonal cloud sourceProvenance:
+  # Execute Sonal cloud source on balancereader service
   - name: 'gcr.io/cloud-builders/mvn'
     id: balancereader-code-scanning
     entrypoint: mvn
@@ -15,7 +15,15 @@ steps:
      '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
      '-Dsonar.porjectkey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/ledger/balancereader
-  # Execute SonarCloud sourceProvenance:
+  # Execute Sonal cloud source on ledgerwriter service
+  - name: 'gcr.io/cloud-builders/mvn'
+    id: ledgerwriter-code-scanning
+    entrypoint: mvn
+    args: ['verify', 'sonar:sonar',
+     '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
+     '-Dsonar.porjectkey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
+    dir: src/ledger/ledgerwriter
+  # Execute Sonal cloud source on accounts contacts service
   - name: 'gcr.io/cloud-builders/python'
     id: contacts-code-scanning
     entrypoint: 'bash'
@@ -29,6 +37,7 @@ steps:
           -Dsonar.projectKey=bank-of-anthos \
           -Dsonar.login=${_SONAR_TOKEN}
     dir: src/accounts/contacts
+  #Execute Sonal cloud source on accounts userservice service
   - name: 'gcr.io/cloud-builders/python'
     id: userservice-code-scanning
     entrypoint: 'bash'
