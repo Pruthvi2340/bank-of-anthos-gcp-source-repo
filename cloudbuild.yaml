@@ -24,46 +24,62 @@ steps:
      '-Dsonar.projectKey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/ledger/ledgerwriter
   # Execute Sonal cloud source on accounts contacts service
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/mvn'
     id: contacts-code-scanning
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        pip install -r requirements.txt
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
-        export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        path=$PATH
-        export PATH=$sonar:$path
-        sonar-scanner \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=pruthvi-gcp-devops \
-          -Dsonar.projectKey=bank-of-anthos \
-          -Dsonar.login=${_SONAR_TOKEN}
+    entrypoint: mvn
+    args: ['verify', 'sonar:sonar',
+     '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
+     '-Dsonar.projectKey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/accounts/contacts
   #Execute Sonal cloud source on accounts userservice service
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/mvn'
     id: userservice-code-scanning
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        pip install -r requirements.txt
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
-        export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        path=$PATH
-        export PATH=$sonar:$path
-        sonar-scanner \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=pruthvi-gcp-devops \
-          -Dsonar.projectKey=bank-of-anthos \
-          -Dsonar.login=${_SONAR_TOKEN}
+    entrypoint: mvn
+    args: ['verify', 'sonar:sonar',
+     '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
+     '-Dsonar.projectKey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/accounts/userservice
 substitutions:
   _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
 options:
   logging: CLOUD_LOGGING_ONLY
+  # # Execute Sonal cloud source on accounts contacts service
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: contacts-code-scanning
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       pip install -r requirements.txt
+  #       wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
+  #       unzip sonar-scanner-cli-5.0.0.2966-linux.zip
+  #       mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
+  #       export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
+  #       path=$PATH
+  #       export PATH=$sonar:$path
+  #       sonar-scanner \
+  #         -Dsonar.host.url=https://sonarcloud.io \
+  #         -Dsonar.organization=pruthvi-gcp-devops \
+  #         -Dsonar.projectKey=bank-of-anthos \
+  #         -Dsonar.login=${_SONAR_TOKEN}
+  #   dir: src/accounts/contacts
+  # #Execute Sonal cloud source on accounts userservice service
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: userservice-code-scanning
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       pip install -r requirements.txt
+  #       wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
+  #       unzip sonar-scanner-cli-5.0.0.2966-linux.zip
+  #       mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
+  #       export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
+  #       path=$PATH
+  #       export PATH=$sonar:$path
+  #       sonar-scanner \
+  #         -Dsonar.host.url=https://sonarcloud.io \
+  #         -Dsonar.organization=pruthvi-gcp-devops \
+  #         -Dsonar.projectKey=bank-of-anthos \
+  #         -Dsonar.login=${_SONAR_TOKEN}
+  #   dir: src/accounts/userservice
