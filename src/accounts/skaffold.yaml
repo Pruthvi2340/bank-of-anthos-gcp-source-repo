@@ -1,0 +1,16 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: accounts
+requires:
+- configs:
+  - e2e-tests
+  path: ../../skaffold-e2e.yaml
+- configs:
+  - contacts
+  path: contacts/skaffold.yaml
+- configs:
+  - userservice
+  path: userservice/skaffold.yaml
+deploy:
+  tolerateFailuresUntilDeadline: true

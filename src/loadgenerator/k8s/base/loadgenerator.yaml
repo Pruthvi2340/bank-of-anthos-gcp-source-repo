@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgenerator
+spec:
+  selector:
+    matchLabels:
+      app: loadgenerator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: loadgenerator
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - all
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: loadgenerator
+        env:
+        - name: FRONTEND_ADDR
+          value: "frontend:80"
+        - name: USERS
+          value: "5"
+        - name: LOG_LEVEL
+          value: "error"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 250m
+            memory: 1Gi

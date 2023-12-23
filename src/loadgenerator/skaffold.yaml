@@ -1,0 +1,19 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: loadgenerator
+profiles:
+- name: development
+  build:
+    artifacts:
+    - image: loadgenerator
+      context: .
+    tagPolicy:
+      sha256: {}
+  manifests:
+    kustomize:
+      paths:
+      - k8s/overlays/development
+  deploy:
+    statusCheck: false
+    kubectl: {}

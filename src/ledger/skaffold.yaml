@@ -1,0 +1,19 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: ledger
+requires:
+- configs:
+  - e2e-tests
+  path: ../../skaffold-e2e.yaml
+- configs:
+  - balancereader
+  path: balancereader/skaffold.yaml
+- configs:
+  - ledgerwriter
+  path: ledgerwriter/skaffold.yaml
+- configs:
+  - transactionhistory
+  path: transactionhistory/skaffold.yaml
+deploy:
+  tolerateFailuresUntilDeadline: true
