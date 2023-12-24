@@ -38,7 +38,7 @@ steps:
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: Build docker image balancereader
-    entrypoint: gcloud   
+#    entrypoint: gcloud   
     args: ['mvn','compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
         '-Djib.from.image=eclipse-temurin:17',
         '-Djib.to.image=gcr.io/$PROJECT_NUMBER/balancereader:$TAG_NAME']
@@ -69,7 +69,7 @@ steps:
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: Build docker image ledgerwriter 
-    entrypoint: gcloud   
+#    entrypoint: gcloud   
     args: [ 'mvn', 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
         '-Djib.from.image=eclipse-temurin:17',
         '-Djib.to.image=gcr.io/$PROJECT_NUMBER/ledgerwriter:$TAG_NAME']

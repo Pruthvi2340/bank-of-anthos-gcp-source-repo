@@ -209,7 +209,7 @@
                 <configuration>
                 <apiToken>${env._SNYK_TOKEN}</apiToken>
                     <args>
-                    <arg>--org=bank-of-anthos</arg>
+                    <arg>--org=b89bf6fa-629c-4627-ae13-53c727978704</arg>
                     <arg>--severity-threshold=high</arg> <!--faile on severity if high-->
                     </args>
                 </configuration>
