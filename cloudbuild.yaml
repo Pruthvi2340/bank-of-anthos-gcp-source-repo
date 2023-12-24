@@ -36,10 +36,10 @@ steps:
   #       mvn snyk:test -fn
   #   dir: src/ledger/balancereader
 
-  - name: maven:3-openjdk-17
+  - name: maven:3.9.6-eclipse-temurin-17
     id: Build docker image balancereader
     entrypoint: mvn
-    args: ['compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
+    args: ['compile', 'com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
         '-Djib.from.image=eclipse-temurin:17',
         '-Djib.to.image=gcr.io/$PROJECT_NUMBER/balancereader:$TAG_NAME']
     dir: src/ledger/balancereader
