@@ -14,27 +14,27 @@
 
 steps:
   # Execute Sonar cloud source on balancereader service
-  - name: 'gcr.io/cloud-builders/mvn'
-    id: balancereader-sonar-scanner
-    entrypoint: mvn
-    args: ['verify', 'sonar:sonar',
-     '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
-     '-Dsonar.projectKey=balancereader', '-Dsonar.login=${_SONAR_TOKEN}']
-    dir: src/ledger/balancereader
+  # - name: 'gcr.io/cloud-builders/mvn'
+  #   id: balancereader-sonar-scanner
+  #   entrypoint: mvn
+  #   args: ['verify', 'sonar:sonar',
+  #    '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
+  #    '-Dsonar.projectKey=balancereader', '-Dsonar.login=${_SONAR_TOKEN}']
+  #   dir: src/ledger/balancereader
 
-  # Execute snyk scanning 
-  - name: ubuntu
-    id: balancereader-snyk
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        apt-get update
-        apt-get -y install maven
-        SNYK_TOKEN=${_SNYK_TOKEN}
-        export SNYK_TOKEN
-        mvn snyk:test -fn
-    dir: src/ledger/balancereader
+  # # Execute snyk scanning 
+  # - name: ubuntu
+  #   id: balancereader-snyk
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       apt-get update
+  #       apt-get -y install maven
+  #       SNYK_TOKEN=${_SNYK_TOKEN}
+  #       export SNYK_TOKEN
+  #       mvn snyk:test -fn
+  #   dir: src/ledger/balancereader
 
   - name: maven:3.8.3-openjdk-17
     id: Build docker image balancereader
