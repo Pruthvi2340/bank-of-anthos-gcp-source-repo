@@ -48,7 +48,7 @@ steps:
 
   # Execute snyk scanning 
   - name: ubuntu
-    id: balancereader-snyk
+    id: ledgerwriter-snyk
     entrypoint: 'bash'
     args:
       - '-c'
@@ -58,7 +58,7 @@ steps:
         SNYK_TOKEN=${_SNYK_TOKEN}
         export SNYK_TOKEN
         mvn snyk:test -fn
-    dir: src/ledger/balancereader
+    dir: src/ledger/ledgerwriter
 
   # Execute ZAP OWASP scanning 
   - name: ubuntu
