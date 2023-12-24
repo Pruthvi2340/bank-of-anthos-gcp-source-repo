@@ -37,6 +37,7 @@
                 <artifactId>nd4j-common</artifactId>
                 <version>1.0.0-beta2</version>
             </dependency>
+            <!-- for Sonar cloud scanning test coverage-->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
