@@ -33,6 +33,17 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.nd4j</groupId>
+                <artifactId>nd4j-common</artifactId>
+                <version>1.0.0-beta2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
@@ -179,12 +190,70 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.3</version>
             </plugin>
+            <!--Change 2 - Changes for unit
+            Test Coverage Percentage Update on Sonar cloud Dashboard
+            Default Location of Code Coverage
+            File is target/site/jaco-it/jacoco.xml,build/reports/jacoco/test/jacocoTestReport.xml
+            -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent<goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    <configuration>
+                        <formats>
+                            <format>XML</format>
+                        </formats>
+                    </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--Changes for software
+            Composition Analysis Scan using Snyk
+            -->
+            <plugin>
+                <groupId>io.snyk</groupId>
+                <artifactId>snyk-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                    <id>snyk-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                    <id>snyk-monitor</id>
+                        <goals>
+                            <goal>monitor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                    <arg>--org=bank-of-anthos</arg>
+                    <arg>--severity-threshold=high</arg> <!--faile on severity if high-->
+                    <args>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.3.1</version>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
@@ -203,6 +272,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>

@@ -36,7 +36,7 @@ steps:
         mvn snyk:test -fn
     dir: src/ledger/balancereader
 
-  - name: 'gcr.io/cloud-builders/mvn'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: Build docker image balancereader
     entrypoint: mvn    
     args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
@@ -45,7 +45,7 @@ steps:
     dir: src/ledger/balancereader
 
   # Execute Sonar cloud source on ledgerwriter service
-  - name: 'gcr.io/cloud-builders/mvn'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: ledgerwriter-code-scanning
     entrypoint: mvn
     args: ['verify', 'sonar:sonar',
