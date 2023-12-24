@@ -42,6 +42,7 @@ steps:
     args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
         '-Djib.from.image=eclipse-temurin:17',
         '-Djib.to.image=gcr.io/$PROJECT_NUMBER/balancereader:$TAG_NAME']
+    dir: src/ledger/balancereader
 
   # Execute Sonar cloud source on ledgerwriter service
   - name: 'gcr.io/cloud-builders/mvn'
@@ -64,6 +65,14 @@ steps:
         SNYK_TOKEN=${_SNYK_TOKEN}
         export SNYK_TOKEN
         mvn snyk:test -fn
+    dir: src/ledger/ledgerwriter
+
+  - name: 'gcr.io/cloud-builders/mvn'
+    id: Build docker image ledgerwriter
+    entrypoint: mvn    
+    args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
+        '-Djib.from.image=eclipse-temurin:17',
+        '-Djib.to.image=gcr.io/$PROJECT_NUMBER/ledgerwriter:$TAG_NAME']
     dir: src/ledger/ledgerwriter
 
   # Execute ZAP OWASP scanning 
