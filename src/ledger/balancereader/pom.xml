@@ -210,7 +210,7 @@
                 <apiToken>${env._SNYK_TOKEN}</apiToken>
                     <args>
                     <arg>--org=985ef26a-ac0e-4a1e-b031-0de6285f13e9</arg>
-                    <arg>--severity-threshold=high</arg> <!--faile on severity if high-->
+                    <arg>--severity-threshold=high</arg> <!--fail on severity if high-->
                     </args>
                 </configuration>
             </plugin>
