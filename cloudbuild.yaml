@@ -36,7 +36,7 @@ steps:
         mvn snyk:test -fn
     dir: src/ledger/balancereader
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: Build docker image balancereader
     entrypoint: mvn    
     args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
@@ -67,7 +67,7 @@ steps:
         mvn snyk:test -fn
     dir: src/ledger/ledgerwriter
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: Build docker image ledgerwriter 
     entrypoint: mvn    
     args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
