@@ -68,7 +68,7 @@ steps:
     dir: src/ledger/ledgerwriter
 
   - name: 'gcr.io/cloud-builders/mvn'
-    id: Build docker image ledgerwriter
+    id: Build docker image ledgerwriter 
     entrypoint: mvn    
     args: [ 'compile com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
         '-Djib.from.image=eclipse-temurin:17',
