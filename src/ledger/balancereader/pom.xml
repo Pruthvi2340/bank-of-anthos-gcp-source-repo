@@ -245,7 +245,7 @@
                     <args>
                     <arg>--org=bank-of-anthos</arg>
                     <arg>--severity-threshold=high</arg> <!--faile on severity if high-->
-                    <args>
+                    </args>
                 </configuration>
             </plugin>
             <plugin>
