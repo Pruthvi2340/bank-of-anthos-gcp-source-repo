@@ -15,7 +15,7 @@
         pip install -r requirements.txt
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
         unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-5.0.0.2966-linux /var/opt
+        sudo mv sonar-scanner-5.0.0.2966-linux /var/opt
         export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
         export PATH=$sonar:$PATH
         sonar-scanner \
@@ -34,7 +34,7 @@
         pip install -r requirements.txt
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
         unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-5.0.0.2966-linux /var/opt
+        sudo mv sonar-scanner-5.0.0.2966-linux /var/opt
         export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
         export PATH=$sonar:$PATH
         sonar-scanner \
@@ -43,3 +43,12 @@
           -Dsonar.projectKey=userservice \
           -Dsonar.login=${_SONAR_TOKEN}
     dir: src/accounts/userservice
+    
+substitutions:
+  _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
+  _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
+options:
+  env:
+  - '_SNYK_TOKEN=$_SNYK_TOKEN'
+  dynamic_substitutions: true
+  logging: CLOUD_LOGGING_ONLY
