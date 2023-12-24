@@ -5,65 +5,83 @@
 # 2. sonar.organization=pruthvi-gcp-devops
 # 3. sonar.projectKey=bank-of-anthos
 # 4. sonar.login=04d9bd592f25db1d991090c621540fbed3541f6f
+########
+# SNYK #
+########
+# 1. SNYK_TOKEN=eb8cc27a-1f71-4da3-a196-230d27ebeafb
+
+# sudo echo -e "SONAR_SCANNER=/var/opt/sonar-scanner-5.0.0.2966-linux/bin" >> .bash_profile
 
 steps:
-  # Execute Sonal cloud source on balancereader service
+  # Execute Sonar cloud source on balancereader service
   - name: 'gcr.io/cloud-builders/mvn'
-    id: balancereader-code-scanning
+    id: balancereader-sonar-scanner
     entrypoint: mvn
     args: ['verify', 'sonar:sonar',
      '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
-     '-Dsonar.projectKey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
+     '-Dsonar.projectKey=balancereader', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/ledger/balancereader
-  # Execute Sonal cloud source on ledgerwriter service
+
+  # Execute snyk scanning 
+  - name: ubuntu
+    id: balancereader-snyk
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update
+        apt-get -y install maven
+        SNYK_TOKEN=${_SNYK_TOKEN}
+        export SNYK_TOKEN
+        mvn snyk:test -fn
+    dir: src/ledger/balancereader
+       
+
+  # Execute Sonar cloud source on ledgerwriter service
   - name: 'gcr.io/cloud-builders/mvn'
     id: ledgerwriter-code-scanning
     entrypoint: mvn
     args: ['verify', 'sonar:sonar',
      '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
-     '-Dsonar.projectKey=bank-of-anthos', '-Dsonar.login=${_SONAR_TOKEN}']
+     '-Dsonar.projectKey=ledgerwriter', '-Dsonar.login=${_SONAR_TOKEN}']
     dir: src/ledger/ledgerwriter
-  # Execute Sonal cloud source on accounts contacts service
+
+  # Execute snyk scanning 
   - name: ubuntu
-    id: contacts-code-scanning
+    id: balancereader-snyk
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        pip install -r requirements.txt
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
-        export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        path=$PATH
-        export PATH=$sonar:$path
-        sonar-scanner \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=pruthvi-gcp-devops \
-          -Dsonar.projectKey=bank-of-anthos \
-          -Dsonar.login=${_SONAR_TOKEN}
-    dir: src/accounts/contacts
-  #Execute Sonal cloud source on accounts userservice service
+        apt-get update
+        apt-get -y install maven
+        SNYK_TOKEN=${_SNYK_TOKEN}
+        export SNYK_TOKEN
+        mvn snyk:test -fn
+    dir: src/ledger/balancereader
+
+  # Execute ZAP OWASP scanning 
   - name: ubuntu
-    id: userservice-code-scanning
+    id: DAST Scan OWASP
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        pip install -r requirements.txt
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-cli-5.0.0.2966-linux.zip /var/opt
-        export sonar=/var/opt/sonar-scanner-5.0.0.2966-linux/bin
-        path=$PATH
-        export PATH=$sonar:$path
-        sonar-scanner \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=pruthvi-gcp-devops \
-          -Dsonar.projectKey=bank-of-anthos \
-          -Dsonar.login=${_SONAR_TOKEN}
-    dir: src/accounts/userservice
+        apt-get update
+        apt-get -y install wget default-jdk
+        wget https://github.com/zaproxy/zaproxy/releases/download/v2.14.0/ZAP_2.14.0_Linux.tar.gz
+        mkdir zap
+        tar -xvf ZAP_2.14.0_Linux.tar.gz
+        cd ZAP_2.14.0
+        ./zap/sh -cmd -quickurl https://example.com -quickprogress -quickout ../zap_report.html
+
+artifacts:
+  objects:
+    location: 'gs://owasp-scan-report'
+    paths:
+      - zap_report.html
 substitutions:
   _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
+  _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
 options:
   logging: CLOUD_LOGGING_ONLY
