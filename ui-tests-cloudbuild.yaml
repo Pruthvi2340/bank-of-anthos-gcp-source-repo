@@ -1,0 +1,50 @@
+steps:
+  #Execute Sonar cloud source on ui-tests service
+  - name: snyk/snyk:python-3.9
+    id: ui-tests-snyk-sonar-code-scanning
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update
+        apt install -y wget
+        SNYK_TOKEN=${_SNYK_TOKEN}
+        export SNYK_TOKEN
+        pip install -r requirements.txt
+        snyk test -fn
+
+        pip install -r requirements.txt
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
+        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
+        mv sonar-scanner-5.0.0.2966-linux /var/opt
+        export PATH=/var/opt/sonar-scanner-5.0.0.2966-linux/bin:$(cat /etc/profile | grep PATH | cut -d'=' -f2- |tr -d '"' | head -n 1)
+        sonar-scanner \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.organization=pruthvi-gcp-devops \
+          -Dsonar.projectKey=userservice \
+          -Dsonar.login=${_SONAR_TOKEN}
+    dir: .github/workflows/ui-tests
+
+  # build and push contacts docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'tag-and-push'
+    script: |
+      #!/bin/sh
+      set -e
+      docker build -t $_IMAGE .
+      docker push "$_IMAGE"
+    dir: .github/workflows/ui-tests
+    
+artifacts:
+    images:
+    - $_IMAGE
+substitutions:
+  _IMAGE: 'us-central1-docker.pkg.dev/${PROJECT_ID}/bank-of-anthos/ui-tests:${TAG_NAME}'
+  _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
+  _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
+options:
+  env:
+  - '_IMAGE=$_IMAGE'
+  - '_SNYK_TOKEN=$_SNYK_TOKEN'
+  dynamic_substitutions: true
+  logging: CLOUD_LOGGING_ONLY
