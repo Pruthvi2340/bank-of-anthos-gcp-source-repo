@@ -1,28 +1,4 @@
 steps:
-  # Execute Sonar cloud source on accounts contacts service
-  - name: snyk/snyk:python-3.9
-    id: contacts-snyk-sonar-code-scanning
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        apt-get update
-        apt install -y wget
-        SNYK_TOKEN=${_SNYK_TOKEN}
-        export SNYK_TOKEN
-        pip install -r requirements.txt
-        snyk test -fn
-
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-        unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        mv sonar-scanner-5.0.0.2966-linux /var/opt
-        export PATH=/var/opt/sonar-scanner-5.0.0.2966-linux/bin:$(cat /etc/profile | grep PATH | cut -d'=' -f2- |tr -d '"' | head -n 1)
-        sonar-scanner \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=pruthvi-gcp-devops \
-          -Dsonar.projectKey=contacts \
-          -Dsonar.login=${_SONAR_TOKEN}
-    dir: src/accounts/contacts
   #Execute Sonar cloud source on accounts userservice service
   - name: snyk/snyk:python-3.9
     id: userservice-snyk-sonar-code-scanning
@@ -49,11 +25,47 @@ steps:
           -Dsonar.login=${_SONAR_TOKEN}
     dir: src/accounts/userservice
 
+  # build and push contacts docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'tag-and-push'
+    script: |
+      #!/bin/sh
+      set -e
+      docker build -t $_IMAGE .
+      docker push "$_IMAGE"
+    dir: src/accounts/contacts
+
+  # Get image details
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'generate-token-and-get-digest'
+    script: |
+      #!/bin/sh
+      set -e
+      gcloud auth print-identity-token --audiences=sigstore > token
+      gcloud container images describe "$_IMAGE" \
+        --format="value(image_summary.fully_qualified_digest)" > image_with_digest
+    dir: src/accounts/contacts
+
+  # Cosign create a record of which service account is used to initiate a build
+  - name: 'gcr.io/projectsigstore/cosign'
+    id: 'sign-image'
+    script: |
+      #!/busybox/sh
+      cosign sign --identity-token=$(cat token) $(cat image_with_digest) -y
+    env:
+    - 'SIGSTORE_NO_CACHE=true'
+    dir: src/accounts/contacts
+    
+artifacts:
+    images:
+    - $_IMAGE
 substitutions:
+  _IMAGE: 'us-central1-docker.pkg.dev/$PROJECT_ID/bank-of-anthos/contacts:$TAG_NAME'
   _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
   _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
 options:
   env:
+  - '_IMAGE=$_IMAGE'
   - '_SNYK_TOKEN=$_SNYK_TOKEN'
   dynamic_substitutions: true
   logging: CLOUD_LOGGING_ONLY

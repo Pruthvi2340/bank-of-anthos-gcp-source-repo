@@ -1,0 +1,60 @@
+steps:
+  # Execute Sonar cloud source on ledgerwriter service
+  - name: 'gcr.io/cloud-builders/mvn'
+    id: ledgerwriter-code-scanning
+    entrypoint: mvn
+    args: ['verify', 'sonar:sonar',
+     '-Dsonar.host.url=https://sonarcloud.io','-Dsonar.organization=pruthvi-gcp-devops',
+     '-Dsonar.projectKey=balancereader', '-Dsonar.login=${_SONAR_TOKEN}']
+    dir: src/ledger/ledgerwriter
+
+  # Execute snyk scanning 
+  - name: ubuntu
+    id: ledgerwriter-snyk
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update
+        apt-get -y install maven
+        SNYK_TOKEN=${_SNYK_TOKEN}
+        export SNYK_TOKEN
+        mvn snyk:test -fn
+    dir: src/ledger/ledgerwriter
+
+  - name: maven:3.9.6-eclipse-temurin-17
+    id: Build docker image ledgerwriter 
+    entrypoint: mvn
+    args: [ 'compile', 'com.google.cloud.tools:jib-maven-plugin:3.4.0:build',
+        '-Djib.from.image=eclipse-temurin:17',
+        '-Djib.to.image=gcr.io/$PROJECT_ID/ledgerwriter:$TAG_NAME']
+    dir: src/ledger/ledgerwriter
+
+  # Execute ZAP OWASP scanning 
+  - name: ubuntu
+    id: DAST Scan OWASP
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update
+        apt-get -y install wget default-jdk
+        wget https://github.com/zaproxy/zaproxy/releases/download/v2.14.0/ZAP_2.14.0_Linux.tar.gz
+        mkdir zap
+        tar -xvf ZAP_2.14.0_Linux.tar.gz
+        cd ZAP_2.14.0
+        ./zap.sh -cmd -quickurl https://example.com -quickprogress -quickout ../zap_report.html
+
+artifacts:
+  objects:
+    location: 'gs://owasp-scan-report'
+    paths:
+      - zap_report.html
+substitutions:
+  _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
+  _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
+options:
+  env:
+  - '_SNYK_TOKEN=$_SNYK_TOKEN'
+  dynamic_substitutions: true
+  logging: CLOUD_LOGGING_ONLY
