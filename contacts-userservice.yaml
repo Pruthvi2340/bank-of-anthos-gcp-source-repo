@@ -1,22 +1,22 @@
 steps:
   # Execute Sonar cloud source on accounts contacts service
-  - name: ubuntu
-    id: contacts-code-scanning
+  - name: snyk/snyk:python-3.9
+    id: contacts-snyk-sonar-code-scanning
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         apt-get update
-        apt-get -y install maven
+        apt install -y wget
         SNYK_TOKEN=${_SNYK_TOKEN}
         export SNYK_TOKEN
-        mvn snyk:test -fn
-
         pip install -r requirements.txt
+        snyk test -fn
+
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
         unzip sonar-scanner-cli-5.0.0.2966-linux.zip
-        sudo mv sonar-scanner-5.0.0.2966-linux /var/opt
-        export PATH=/var/opt/sonar-scanner-5.0.0.2966-linux/bin:$(awk -F'"' '/^PATH/ {print $2}' /etc/environment)
+        mv sonar-scanner-5.0.0.2966-linux /var/opt
+        export PATH=/var/opt/sonar-scanner-5.0.0.2966-linux/bin:$(cat /etc/profile | grep PATH | cut -d'=' -f2- |tr -d '"' | head -n 1)
         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pruthvi-gcp-devops \
@@ -24,8 +24,8 @@ steps:
           -Dsonar.login=${_SONAR_TOKEN}
     dir: src/accounts/contacts
   #Execute Sonar cloud source on accounts userservice service
-  - name: ubuntu
-    id: userservice-code-scanning
+  - name: snyk/snyk:python-3.9
+    id: userservice-snyk-sonar-code-scanning
     entrypoint: 'bash'
     args:
       - '-c'
