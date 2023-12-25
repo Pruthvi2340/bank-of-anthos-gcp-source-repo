@@ -47,7 +47,7 @@ steps:
 
 artifacts:
   objects:
-    location: 'gs://owasp-scan-report'
+    location: 'gs://${PROJECT_ID}-owasp-scan-report'
     paths:
       - zap_report.html
 substitutions:
