@@ -39,7 +39,7 @@ artifacts:
     images:
     - $_IMAGE
 substitutions:
-  _IMAGE: 'us-central1-docker.pkg.dev/${PROJECT_ID}/bank-of-anthos/contacts:${TAG_NAME}'
+  _IMAGE: 'us-central1-docker.pkg.dev/${PROJECT_ID}/bank-of-anthos/userservice:${TAG_NAME}'
   _SONAR_TOKEN: 04d9bd592f25db1d991090c621540fbed3541f6f
   _SNYK_TOKEN: eb8cc27a-1f71-4da3-a196-230d27ebeafb
 options:
