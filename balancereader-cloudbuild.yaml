@@ -1,6 +1,6 @@
 ###############
 # Sonal cloud #
-###############
+##############
 # 1. sonar.host.url=https://sonarcloud.io
 # 2. sonar.organization=pruthvi-gcp-devops
 # 3. sonar.projectKey=bank-of-anthos
