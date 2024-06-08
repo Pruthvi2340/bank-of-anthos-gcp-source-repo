@@ -36,7 +36,7 @@ coverage[toml]==7.3.3
     # via
     #   coverage
     #   pytest-cov
-cryptography==41.0.7
+cryptography==42.0.0
     # via -r requirements.in
 deprecated==1.2.14
     # via opentelemetry-api
@@ -88,7 +88,7 @@ itsdangerous==2.1.2
     # via
     #   -r requirements.in
     #   flask
-jinja2==3.1.2
+jinja2==3.1.4
     # via
     #   -r requirements.in
     #   flask
@@ -193,7 +193,7 @@ pytest-cov==4.1.0
     # via -r requirements.in
 pytz==2023.3.post1
     # via -r requirements.in
-requests==2.31.0
+requests==2.32.0
     # via
     #   -r requirements.in
     #   google-api-core
